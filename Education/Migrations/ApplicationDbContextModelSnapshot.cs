@@ -22,23 +22,6 @@ namespace Education.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Education.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("Education.Models.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -47,15 +30,9 @@ namespace Education.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -63,14 +40,10 @@ namespace Education.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
-            modelBuilder.Entity("Education.Models.Lesson", b =>
+            modelBuilder.Entity("Education.Models.CourseVideo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,14 +51,10 @@ namespace Education.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -97,7 +66,7 @@ namespace Education.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("CourseVideos", (string)null);
                 });
 
             modelBuilder.Entity("Education.Models.User", b =>
@@ -139,29 +108,10 @@ namespace Education.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Education.Models.Course", b =>
-                {
-                    b.HasOne("Education.Models.Category", "Category")
-                        .WithMany("Courses")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Education.Models.User", "Teacher")
-                        .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("Education.Models.Lesson", b =>
+            modelBuilder.Entity("Education.Models.CourseVideo", b =>
                 {
                     b.HasOne("Education.Models.Course", "Course")
-                        .WithMany("Lessons")
+                        .WithMany("Videos")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -169,19 +119,9 @@ namespace Education.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("Education.Models.Category", b =>
-                {
-                    b.Navigation("Courses");
-                });
-
             modelBuilder.Entity("Education.Models.Course", b =>
                 {
-                    b.Navigation("Lessons");
-                });
-
-            modelBuilder.Entity("Education.Models.User", b =>
-                {
-                    b.Navigation("Courses");
+                    b.Navigation("Videos");
                 });
 #pragma warning restore 612, 618
         }

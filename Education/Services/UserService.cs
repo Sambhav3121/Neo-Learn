@@ -1,15 +1,15 @@
-using Education.DTO;
 using Education.Models;
+using Education.DTO;
+using Education.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Education.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Education.Services
 {
@@ -49,11 +49,9 @@ namespace Education.Services
         {
             var email = loginDto.Email?.Trim().ToLower();
             var password = loginDto.Password?.Trim();
-
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 throw new UnauthorizedAccessException("Invalid email or password.");
-
             return user;
         }
 
@@ -87,7 +85,6 @@ namespace Education.Services
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
                 throw new Exception("User not found.");
-
             return new UserProfileDto
             {
                 FullName = user.FullName,
@@ -105,15 +102,12 @@ namespace Education.Services
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
                 throw new Exception("User not found.");
-
             user.FullName = editDto.FullName?.Trim() ?? user.FullName;
             user.Address = editDto.Address?.Trim() ?? user.Address;
             user.PhoneNumber = editDto.PhoneNumber?.Trim() ?? user.PhoneNumber;
             user.BirthDate = editDto.BirthDate ?? user.BirthDate;
             user.Gender = editDto.Gender ?? user.Gender;
-
             await _context.SaveChangesAsync();
-
             return new UserProfileDto
             {
                 FullName = user.FullName,
